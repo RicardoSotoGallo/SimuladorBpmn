@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8"> <!-- Esto es el meta -->
+    <title>BPMN JS Frontend</title>
+    <!-- Estilos de bpmn-js -->
+    <link rel="stylesheet" href="dist/assets/diagram-js.css">
+    <link rel="stylesheet" href="dist/assets/bpmn-font/css/bpmn.css">
+
+
+    <!-- esto es el cuadrado -->
+    <style>
+      /* Contenedor del canvas */
+      #canvas {
+        width: 100%;
+        height: 600px;
+        border: 1px solid #ccc;
+      }
+
+      /* Ejemplo: nodo resaltado */
+      .highlight .djs-visual > :nth-child(1) {
+        stroke: red !important;
+        stroke-width: 3px !important;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <h2>Editor BPMN - Ejemplo Frontend</h2>
+    <div id="canvas"></div>
+    <button id="export-btn">Exportar XML</button>
+
+    <!-- Librería bpmn-js -->
+    <script type="module" src="dist/bpmn-modeler.development.js"></script>
+
+    <!-- Script principal -->
+    <script type="module">
+      // Crear el modeler
+      const modeler = new BpmnJS({
+        container: '#canvas'
+      });
+
+      // Crear diagrama vacío
+      modeler.createDiagram();
+      
+
+      //Aqui es el script para crear el xml. Por ahora solo se enseña por consola
+      // Función para exportar XML usando await
+      const exportButton = document.getElementById('export-btn');
+      exportButton.addEventListener('click', async () => {
+        try {
+          const { xml } = await modeler.saveXML({ format: true });
+          console.log(xml);
+          alert('XML exportado en consola');
+        } catch (err) {
+          console.error('Error exportando XML', err);
+        }
+      });
+
+      // Ejemplo: marcar el nodo de inicio con un estilo personalizado
+      const elementRegistry = modeler.get('elementRegistry');
+      const canvas = modeler.get('canvas');
+      const startEvent = elementRegistry.get('StartEvent_1');
+      if (startEvent) {
+        canvas.addMarker(startEvent, 'highlight');
+      }
+    </script>
+  </body>
+</html>
